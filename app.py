@@ -1,10 +1,12 @@
 from flask import Flask, request
 from flask_cors import CORS
 from dotenv import load_dotenv
-
-from util.assistant import client
+import sys
+import os
 
 load_dotenv()
+
+from util.assistant import client
 
 server = Flask(__name__)
 server.config['CORS_HEADERS'] = 'Content-Type'
@@ -21,25 +23,33 @@ def create_thread():
     return thread.id
 
 
-@server.route("/messages/<string:thread_id>/send")
+@server.route("/messages/<string:thread_id>/send", methods=['POST'])
 def send_message(thread_id):
-    data = request.json()
+    data = request.json
     if "message" in data:
+        raw = base64.b64decode(message[data])
+        out = io.StringIO(raw)
+
+        message = whisper_stt(out)
+
         client.beta.threads.messages.create(
             thread_id=thread_id,
             role="user",
-            content=data["message"]
+            content=message
         )
-        return "", 200
+        return "message sent", 200
     else:
-        return "", 405
+        return "no message provided", 405
 
 
 @server.route("/messages/<string:thread_id>")
 def get_messages(thread_id):
-    messages = client.beta.threads.messages.list(thread_id)
-    return messages
+    thread = client.beta.threads.messages.list(thread_id)
+    print(thread, file=sys.stderr)
+    messages = [{"role": message.role, "content": message.content[0].text.value}
+                for message in thread.data]
+    return messages, 200
 
 
 if __name__ == "__main__":
-    server.run()
+    server.run(debug=True)
