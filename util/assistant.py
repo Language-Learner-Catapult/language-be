@@ -14,20 +14,14 @@ assistant = client.beta.assistants.create(
 
 def run_assistant(thread_id):
     client.beta.threads.runs.create(
-        thread_id=thread_id,
-        assistant_id=assistant.id,
-        instructions=""
+        thread_id=thread_id, assistant_id=assistant.id, instructions=""
     )
 
 
 def whisper_tts(text, voice="alloy"):
-    response = client.audio.speech.create(
-        model="tts-1",
-        voice=voice,
-        input=text
-    )
+    response = client.audio.speech.create(model="tts-1", voice=voice, input=text)
 
-    out = io.StringIO("")
+    out = io.StringIO()
     for data in response.iter_bytes():
         out.write(data)
 
@@ -36,8 +30,7 @@ def whisper_tts(text, voice="alloy"):
 
 def whisper_stt(audio_file):
     transcription = client.audio.transcriptions.create(
-        model="whisper-1",
-        file=audio_file
+        model="whisper-1", file=audio_file
     )
 
     return transcription

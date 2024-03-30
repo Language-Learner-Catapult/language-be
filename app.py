@@ -1,4 +1,5 @@
-from flask import Flask, request
+import os
+from flask import Flask
 from flask_cors import CORS
 from dotenv import load_dotenv
 import sys
@@ -9,7 +10,8 @@ load_dotenv()
 from util.assistant import client
 
 server = Flask(__name__)
-server.config['CORS_HEADERS'] = 'Content-Type'
+socketio = SocketIO(server, cors_allowed_origins="*")
+server.config["CORS_HEADERS"] = "Content-Type"
 CORS(server, resources={r"/*": {"origins": "*"}})
 
 # Add blueprints here
@@ -23,7 +25,7 @@ def create_thread():
     return thread.id
 
 
-@server.route("/messages/<string:thread_id>/send", methods=['POST'])
+@server.route("/messages/<string:thread_id>/send", methods=["POST"])
 def send_message(thread_id):
     data = request.json
     if "message" in data:
@@ -33,9 +35,7 @@ def send_message(thread_id):
         message = whisper_stt(out)
 
         client.beta.threads.messages.create(
-            thread_id=thread_id,
-            role="user",
-            content=message
+            thread_id=thread_id, role="user", content=data["message"]
         )
         return "message sent", 200
     else:
@@ -46,8 +46,10 @@ def send_message(thread_id):
 def get_messages(thread_id):
     thread = client.beta.threads.messages.list(thread_id)
     print(thread, file=sys.stderr)
-    messages = [{"role": message.role, "content": message.content[0].text.value}
-                for message in thread.data]
+    messages = [
+        {"role": message.role, "content": message.content[0].text.value}
+        for message in thread.data
+    ]
     return messages, 200
 
 
