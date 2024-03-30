@@ -1,5 +1,6 @@
 Flask==3.0.2
 flask-cors
+filetype
 openai
 python-dotenv
 scipy
