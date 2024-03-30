@@ -32,6 +32,8 @@ def send_message(thread_id):
         raw = base64.b64decode(message[data])
         out = io.StringIO(raw)
 
+        out = preprocess(out)
+
         message = whisper_stt(out)
 
         client.beta.threads.messages.create(

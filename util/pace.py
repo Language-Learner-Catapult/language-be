@@ -65,8 +65,8 @@ def wpm(file: io.BufferedReader, audio: io.BytesIO) -> dict:
     transcript: Transcription = whisper.whisper_stt(file)
     words = transcript.text.split(" ")
     num_words: int = len(words) + 1
-    ts, sr = librosa.load(audio)
-    duration = librosa.get_duration(y=ts, sr=sr)
+    y, sr = librosa.load(audio)
+    duration = librosa.get_duration(y=y, sr=sr)
     avg_pace: float = (
         num_words / duration
     ) * 60  # Average out to num of words per minute
@@ -80,4 +80,4 @@ def wpm(file: io.BufferedReader, audio: io.BytesIO) -> dict:
 #         + "/test_assets/harvard.wav"
 #     )
 #     with open(path, "rb") as f:
-#         avg_pace(file=f, audio=io.BytesIO(f.read()))
+#         wpm(file=f, audio=io.BytesIO(f.read()))

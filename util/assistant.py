@@ -1,4 +1,4 @@
-from openai import OpenAI
+from openai import OpenAI, Transcription
 import io
 
 client = OpenAI()
@@ -28,7 +28,7 @@ def whisper_tts(text, voice="alloy"):
     return out
 
 
-def whisper_stt(audio_file):
+def whisper_stt(audio_file: io.BufferedReader) -> Transcription:
     transcription = client.audio.transcriptions.create(
         model="whisper-1", file=audio_file
     )
