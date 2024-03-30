@@ -1,0 +1,6 @@
+services:
+    backend:
+      build: .
+      volumes:
+        - .:/server/
+      network_mode: host
