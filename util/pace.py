@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 from openai.types.audio import Transcription
 
-load_dotenv()
-import assistant as whisper
+# load_dotenv()
+# import assistant as whisper
 
 # Faster speech - faster pitch fluctuations
 # Spectral feature analysis
