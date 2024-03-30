@@ -1,3 +1,10 @@
 __pycache__
 .env
 .mypy_cache
+__pycache__
+util/testing5.wav
+util/testing4.mp3
+util/testing3.mp3
+util/testing2.mp3
+util/testing.m4a
+util/00026.wav

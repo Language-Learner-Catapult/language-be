@@ -1,3 +1,4 @@
+from util.assistant import client
 from flask import Flask, request
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -6,7 +7,6 @@ import os
 
 load_dotenv()
 
-from util.assistant import client
 
 server = Flask(__name__)
 server.config['CORS_HEADERS'] = 'Content-Type'
