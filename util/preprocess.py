@@ -10,6 +10,8 @@ from constants import SILENCE
 import base64
 import io
 import noisereduce as nr
+from dotenv import load_dotenv
+from utils import webm_to_wav
 
 
 def preprocess(
@@ -46,21 +48,30 @@ def preprocess(
         samplerate=sr,
         format="wav",
     )
+    with open(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        + "/test_assets/no_bg.wav",
+        "rb",
+    ) as f:
+        output.write(f.read())
+    os.remove(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        + "/test_assets/no_bg.wav"
+    )
     return output
 
 
-# if __name__ == "__main__":
-#     path = (
-#         os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-#         + "/test_assets/bg_test.mp3"
-#     )
-#     print(path)
-#     with open(path, "rb") as f:
-#         print(f)
-#         # Encode the file contents as base64 string
-#         base64_str = base64.encodebytes(f.read()).decode("utf-8")
-#         # Create a StringIO byte buffer from the base64 string
-#         audio = io.BytesIO(base64.b64decode(base64_str))
+if __name__ == "__main__":
+    load_dotenv()
+    path = (
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        + "/test_assets/test.webm"
+    )
+    with open(path, "rb") as f:
+        # Encode the file contents as base64 string
+        # base64_str = base64.encodebytes(f.read()).decode("utf-8")
+        # # Create a StringIO byte buffer from the base64 string
+        # audio = io.BytesIO(base64.b64decode(base64_str))
 
-#         # Call the preprocess function with the audio
-#         preprocess(audio=audio)
+        # Call the preprocess function with the audio
+        preprocess(audio=webm_to_wav(f.read()))

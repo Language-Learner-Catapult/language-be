@@ -10,7 +10,7 @@ import os
 # from keras.models import Sequential
 # from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, LeakyReLU
 # from keras.optimizers import RMSprop
-# import matplotlib.pyplot as plt 
+# import matplotlib.pyplot as plt
 
 # le = LabelEncoder()
 # base64_audio_string = ""
@@ -24,7 +24,7 @@ def decibelAnalysis(file):
     audio_bytes = base64.b64decode(base64_audio_string)
     y, sr = librosa.load(io.BytesIO(audio_bytes), sr=None)
     D = librosa.stft(y)
-    D_db = librosa.amplitude_to_db(D, top_db=None, ref = np.min)
+    D_db = librosa.amplitude_to_db(D, top_db=None, ref=np.min)
     print(np.nanmean(D_db), np.nanmax(D_db))
     return (np.nanmean(D_db), np.nanmax(D_db))
 
@@ -33,7 +33,7 @@ def decibelAnalysis(file):
 # def getDecibelFreq(file):
 #     y, sr = librosa.load(file, sr=None)
 #     D = librosa.stft(y)
-#     D_db = librosa.amplitude_to_db(D, top_db=None, ref = np.min)   
+#     D_db = librosa.amplitude_to_db(D, top_db=None, ref = np.min)
 #     return D_db
 # def pad_2d_array(arr, target_length):
 #     """Pad a 2D array with zeros to the desired length."""
@@ -64,7 +64,7 @@ def decibelAnalysis(file):
 #     for item in totalData:
 #         emotion_code = item[0].split('-')[2]
 #         sentiment_label = emotion_key.get(emotion_code)
-#         if sentiment_label: 
+#         if sentiment_label:
 #             item[2]['sentiment'] = sentiment_label
 #     # shuffle data
 #     np.random.shuffle(totalData)
@@ -78,14 +78,14 @@ def decibelAnalysis(file):
 #     x = np.array(data_padded)
 #     y = np.array(y)
 #     return (x,y)
-    
+
 # def trainModel(x, y):
 #     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
 #     print("Training set size:", len(x_train))
 #     print("Test set size:", len(x_test))
-    
-    
+
+
 #     # Define the model architecture
 #     model = Sequential()
 #     model.add(Conv2D(32, (3, 3), input_shape=(x_train.shape[1], x_train.shape[2], 1)))
@@ -112,7 +112,7 @@ def decibelAnalysis(file):
 #     test_loss, test_acc = model.evaluate(x_test[..., np.newaxis], y_test, verbose=2)
 #     print('\nTest accuracy:', test_acc)
 #     print('\nTest Loss:', test_loss)
-    
+
 
 #     # Use the model to make predictions
 #     predictions = model.predict(x_test[..., np.newaxis])

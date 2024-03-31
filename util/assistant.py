@@ -33,7 +33,7 @@ Your Name: {name}
 Begin the conversation with a short introduction of yourself in <language>."""
 
 
-def run_assistant(thread_id, name, language):
+def run_assistant(thread_id, name, language, wpm):
     thread = client.beta.threads.messages.list(thread_id)
     messages = [{"role": message.role, "content": message.content[0].text.value}
                 for message in thread.data]
@@ -54,9 +54,14 @@ def run_assistant(thread_id, name, language):
         content=chat_completion.choices[0].message.content
     )
 
-    messages.append({"role": "system", "content": "Estimate the user's\
-                        fluency in this language on a scale of 1 to 100. \
-                        Respond only with a fraction of 100."})
+    messages.append({"role": "system", "content": """Please analyze the following
+                     text and provide a fluency score between 1 and 100, where 1
+                     represents a complete beginner and 100 represents a native
+                     speaker. Consider factors such as words per minute, grammar, vocabulary,
+                     sentence structure, and overall coherence when assessing
+                     the text. Respond only with a fraction of 100, like <score>/100.
+
+                     Pace: {pace}""".format(pace=wpm)})
 
     fluency_rating = client.chat.completions.create(
         messages=messages,

@@ -7,13 +7,14 @@ import librosa
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 from openai.types.audio import Transcription
+from utils import webm_to_wav
 
 
-def wpm(file: io.BufferedReader, audio: io.BytesIO) -> dict:
+def wpm(audio: io.BytesIO) -> dict:
     """
     Returns wpm of the audio.
     """
-    transcript: Transcription = whisper.whisper_stt(file)
+    transcript: Transcription = whisper_stt(audio)
     words = transcript.text.split(" ")
     num_words: int = len(words) + 1
     y, sr = librosa.load(audio)
@@ -25,10 +26,13 @@ def wpm(file: io.BufferedReader, audio: io.BytesIO) -> dict:
 
 
 # Given a base64 string, the string gets converted to a wav file
-# if __name__ == "__main__":
-#     path = (
-#         os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-#         + "/test_assets/harvard.wav"
-#     )
-#     with open(path, "rb") as f:
-#         wpm(file=f, audio=io.BytesIO(f.read()))
+if __name__ == "__main__":
+    load_dotenv()
+    from assistant import *
+
+    path = (
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        + "/test_assets/test.webm"
+    )
+    with open(path, "rb") as f:
+        wpm(audio=webm_to_wav(f.read()))
