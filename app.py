@@ -50,7 +50,7 @@ def send_message(thread_id):
         )
 
         response, fluency = run_assistant(
-            thread_id, data["name"], data["language"], wpm(out))
+            thread_id, data["name"], data["language"], wpm(out), data["proficiency"])
         encoded_response = str(base64.b64encode(whisper_tts(response)),
                                encoding="utf-8")
 
