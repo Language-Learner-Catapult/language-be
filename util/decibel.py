@@ -1,10 +1,6 @@
 # Beat tracking example
-import librosa
-<<<<<<< HEAD
 import librosa.display
-=======
 import numpy as np
->>>>>>> origin/decibel
 
 import base64
 import io
@@ -14,47 +10,31 @@ import os
 # from keras.models import Sequential
 # from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, LeakyReLU
 # from keras.optimizers import RMSprop
-# import matplotlib.pyplot as plt 
+# import matplotlib.pyplot as plt
 
-<<<<<<< HEAD
-
-def decibelAnalysis():
-    filename = librosa.example('nutcracker')
-    # 2. Load the audio as a waveform `y`
-    #    Store the sampling rate as `sr`
-    y, sr = librosa.load(filename)
-    # 3. Run the default beat tracker
-    tempo, beat_frames = librosa.beat.beat_track(y=y, sr=sr)
-=======
 # le = LabelEncoder()
 base64_audio_string = ""
 with open("encoded-20240330185923.txt", "r") as file:
     base64_audio_string = file.read()
 audio_bytes = base64.b64decode(base64_audio_string)
+
+
 def decibelAnalysis(file):
     # filename = librosa.example('nutcracker')
     # print(filename)
     y, sr = librosa.load(file, sr=None)
->>>>>>> origin/decibel
     D = librosa.stft(y)
-    D_db = librosa.amplitude_to_db(D, top_db=None, ref = np.min)
+    D_db = librosa.amplitude_to_db(D, top_db=None, ref=np.min)
     print(np.nanmean(D_db), np.nanmax(D_db))
     return (np.nanmean(D_db), np.nanmax(D_db))
 
-<<<<<<< HEAD
-    librosa.display.specshow(D_db, sr=sr, x_axis='time', y_axis='log')
-    # 4. Convert the frame indices of beat events into timestamps
-    beat_times = librosa.frames_to_time(beat_frames, sr=sr)
 
-
-decibelAnalysis()
-=======
 decibelAnalysis(io.BytesIO(audio_bytes))
 
 # def getDecibelFreq(file):
 #     y, sr = librosa.load(file, sr=None)
 #     D = librosa.stft(y)
-#     D_db = librosa.amplitude_to_db(D, top_db=None, ref = np.min)   
+#     D_db = librosa.amplitude_to_db(D, top_db=None, ref = np.min)
 #     return D_db
 # def pad_2d_array(arr, target_length):
 #     """Pad a 2D array with zeros to the desired length."""
@@ -85,7 +65,7 @@ decibelAnalysis(io.BytesIO(audio_bytes))
 #     for item in totalData:
 #         emotion_code = item[0].split('-')[2]
 #         sentiment_label = emotion_key.get(emotion_code)
-#         if sentiment_label: 
+#         if sentiment_label:
 #             item[2]['sentiment'] = sentiment_label
 #     # shuffle data
 #     np.random.shuffle(totalData)
@@ -99,14 +79,14 @@ decibelAnalysis(io.BytesIO(audio_bytes))
 #     x = np.array(data_padded)
 #     y = np.array(y)
 #     return (x,y)
-    
+
 # def trainModel(x, y):
 #     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
 #     print("Training set size:", len(x_train))
 #     print("Test set size:", len(x_test))
-    
-    
+
+
 #     # Define the model architecture
 #     model = Sequential()
 #     model.add(Conv2D(32, (3, 3), input_shape=(x_train.shape[1], x_train.shape[2], 1)))
@@ -133,7 +113,7 @@ decibelAnalysis(io.BytesIO(audio_bytes))
 #     test_loss, test_acc = model.evaluate(x_test[..., np.newaxis], y_test, verbose=2)
 #     print('\nTest accuracy:', test_acc)
 #     print('\nTest Loss:', test_loss)
-    
+
 
 #     # Use the model to make predictions
 #     predictions = model.predict(x_test[..., np.newaxis])
@@ -150,4 +130,3 @@ decibelAnalysis(io.BytesIO(audio_bytes))
 # print("done")
 
 # trainModel(x,y)
->>>>>>> origin/decibel

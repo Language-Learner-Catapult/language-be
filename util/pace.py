@@ -7,13 +7,14 @@ import librosa
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 from openai.types.audio import Transcription
+from util.assistant import *
 
 
-def wpm(file: io.BufferedReader, audio: io.BytesIO) -> dict:
+def wpm(audio: io.BytesIO) -> dict:
     """
     Returns wpm of the audio.
     """
-    transcript: Transcription = whisper.whisper_stt(file)
+    transcript: Transcription = whisper_stt(audio)
     words = transcript.text.split(" ")
     num_words: int = len(words) + 1
     y, sr = librosa.load(audio)

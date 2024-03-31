@@ -9,6 +9,7 @@ import filetype
 load_dotenv()
 
 from util.assistant import *
+from util.pace import *
 
 server = Flask(__name__)
 server.config['CORS_HEADERS'] = 'Content-Type'
@@ -25,7 +26,7 @@ def create_thread():
 
     data = request.json
     response, fluency = run_assistant(
-        thread.id, data["name"], data["language"])
+        thread.id, data["name"], data["language"], 0)
     encoded_response = str(base64.b64encode(whisper_tts(response)),
                            encoding="utf-8")
 
@@ -49,7 +50,7 @@ def send_message(thread_id):
         )
 
         response, fluency = run_assistant(
-            thread_id, data["name"], data["language"])
+            thread_id, data["name"], data["language"], wpm(out))
         encoded_response = str(base64.b64encode(whisper_tts(response)),
                                encoding="utf-8")
 
