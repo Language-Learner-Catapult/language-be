@@ -6,18 +6,20 @@ import json
 import librosa
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
-from openai.types.audio import Transcription
-from utils import webm_to_wav
+from utils import bytes_to_str, webm_to_wav
+import soundfile as sf
 
 
 def wpm(audio: io.BytesIO) -> dict:
     """
     Returns wpm of the audio.
     """
-    transcript: Transcription = whisper_stt(audio)
-    words = transcript.text.split(" ")
+    transcript = whisper_stt(audio)
+    words = transcript.split(" ")
     num_words: int = len(words) + 1
-    y, sr = librosa.load(audio)
+    # num_words = 100
+    # audio_str: io.StringIO = bytes_to_str(audio)
+    y, sr = sf.read(audio)
     duration = librosa.get_duration(y=y, sr=sr)
     avg_pace: float = (
         num_words / duration
@@ -35,4 +37,6 @@ if __name__ == "__main__":
         + "/test_assets/test.webm"
     )
     with open(path, "rb") as f:
-        wpm(audio=webm_to_wav(f.read()))
+        # output: io.BytesIO = io.BytesIO(f.read())
+        # output.name = "file.webm"
+        print(wpm(audio=webm_to_wav(f.read())))

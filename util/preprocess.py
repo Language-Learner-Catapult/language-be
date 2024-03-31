@@ -15,7 +15,7 @@ from utils import webm_to_wav
 
 
 def preprocess(
-    audio: io.StringIO,
+    audio: io.BytesIO,
     remove_bg: bool = True,
     strip_silence: bool = True,
 ) -> io.BytesIO:
@@ -25,6 +25,8 @@ def preprocess(
     - Removes background noise
     """
     # Load the audio
+    print(type(audio))
+    print(audio.name)
     y, sr = librosa.load(audio)
 
     # Remove background noise
@@ -74,4 +76,6 @@ if __name__ == "__main__":
         # audio = io.BytesIO(base64.b64decode(base64_str))
 
         # Call the preprocess function with the audio
+        # output: io.BytesIO = io.BytesIO(f.read())
+        # output.name = "file.webm"
         preprocess(audio=webm_to_wav(f.read()))
