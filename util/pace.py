@@ -7,7 +7,7 @@ import librosa
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 from openai.types.audio import Transcription
-from util.assistant import *
+from utils import webm_to_wav
 
 
 def wpm(audio: io.BytesIO) -> dict:
@@ -26,10 +26,13 @@ def wpm(audio: io.BytesIO) -> dict:
 
 
 # Given a base64 string, the string gets converted to a wav file
-# if __name__ == "__main__":
-#     path = (
-#         os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-#         + "/test_assets/harvard.wav"
-#     )
-#     with open(path, "rb") as f:
-#         wpm(file=f, audio=io.BytesIO(f.read()))
+if __name__ == "__main__":
+    load_dotenv()
+    from assistant import *
+
+    path = (
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        + "/test_assets/test.webm"
+    )
+    with open(path, "rb") as f:
+        wpm(audio=webm_to_wav(f.read()))

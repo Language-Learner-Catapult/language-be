@@ -13,3 +13,6 @@ util/dataset
 util/data/
 util/audio files
 util/temp_dataset/
+test_assets/
+file.wav
+file.webm

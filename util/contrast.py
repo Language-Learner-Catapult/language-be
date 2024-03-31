@@ -1,9 +1,12 @@
 import io
 import os
+from dotenv import load_dotenv
 import librosa
 
+from utils import webm_to_wav
 
-def contrast(file: io.BufferedReader, audio: io.BytesIO) -> dict:
+
+def contrast(audio: io.BytesIO) -> dict:
     """
     Measure the contrast of a speaker's voice;
     the higher the contrast, the more dynamic the speech is and the more likely
@@ -19,9 +22,10 @@ def contrast(file: io.BufferedReader, audio: io.BytesIO) -> dict:
 
 
 if __name__ == "__main__":
+    load_dotenv("../.env")
     path = (
         os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        + "/test_assets/harvard.wav"
+        + "/test_assets/test.webm"
     )
     with open(path, "rb") as f:
-        contrast(file=f, audio=io.BytesIO(f.read()))
+        contrast(audio=webm_to_wav(f.read()))
