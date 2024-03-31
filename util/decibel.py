@@ -5,6 +5,8 @@ import numpy as np
 import base64
 import io
 import os
+import soundfile as sf
+
 # from sklearn.model_selection import train_test_split
 # from sklearn.preprocessing import LabelEncoder
 # from keras.models import Sequential
@@ -12,21 +14,21 @@ import os
 # from keras.optimizers import RMSprop
 # import matplotlib.pyplot as plt
 
+
 # le = LabelEncoder()
 # base64_audio_string = ""
 # with open("./util/encoded-20240330185923.txt", "r") as file:
 #     base64_audio_string = file.read()
 # audio_bytes = base64.b64decode(base64_audio_string)
-def decibelAnalysis(file):
+def decibelAnalysis(audio: io.BytesIO):
     # filename = librosa.example('nutcracker')
     # print(filename)
-    base64_audio_string = file
-    audio_bytes = base64.b64decode(base64_audio_string)
-    y, sr = librosa.load(io.BytesIO(audio_bytes), sr=None)
+    y, sr = sf.load(audio, sr=None)
     D = librosa.stft(y)
     D_db = librosa.amplitude_to_db(D, top_db=None, ref=np.min)
     print(np.nanmean(D_db), np.nanmax(D_db))
     return (np.nanmean(D_db), np.nanmax(D_db))
+
 
 # decibelAnalysis(io.BytesIO(audio_bytes))
 
