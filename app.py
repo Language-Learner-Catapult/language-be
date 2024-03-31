@@ -56,8 +56,18 @@ def send_message(thread_id):
             role="user",
             content=message
         )
+
         sentiment_score, sentiment_magnitude = analyzeSentiment(message)
-        print(sentiment_score, sentiment_magnitude)
+        tone_score = 0
+        vol_score = 0
+        if (sentiment_score > 0 and decibel[0] > 80):
+            tone_score = 1  
+        elif (sentiment_score < 0 and decibel[0] < 80 and decibel[0] > 40):
+            tone_score = -1
+        if (decibel[1] > 90):
+            vol_score = 1
+        elif (decibel[1] < 40):
+            vol_score = -1
         response, fluency = run_assistant(
             thread_id, data["name"], data["language"], wpm(out))
         encoded_response = str(base64.b64encode(whisper_tts(response)),
