@@ -13,18 +13,10 @@ from util.assistant import *
 import soundfile as sf
 
 
-<<<<<<< HEAD
-def wpm(transcript, audio: io.BytesIO) -> dict:
-    """
-    Returns wpm of the audio.
-    """
-    # transcript = whisper_stt(audio)
-=======
 def wpm(transcript: str, audio: io.BytesIO):
     """
     Returns wpm of the audio.
     """
->>>>>>> origin/main
     words = transcript.split(" ")
     num_words: int = len(words) + 1
     audio.seek(0)
