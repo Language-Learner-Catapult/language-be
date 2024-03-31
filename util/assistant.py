@@ -123,7 +123,8 @@ def run_assistant(thread_id, name, language, wpm, proficiency):
                      represents a complete beginner and 100 represents a native
                      speaker. Consider factors such as words per minute, grammar, vocabulary,
                      sentence structure, and overall coherence when assessing
-                     the text. Respond only with a fraction of 100, like <score>/100.
+                     the text. Give your best guess and response with a number BETWEEN 1
+                     AND 100 ONLY.
 
                      Pace: {pace}""".format(pace=wpm)})
 
