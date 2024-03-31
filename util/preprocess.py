@@ -24,9 +24,6 @@ def preprocess(
     - Strips silence from the beginning and end of the recording
     - Removes background noise
     """
-    # Load the audio
-    print(type(audio))
-    print(audio.name)
     y, sr = librosa.load(audio)
 
     # Remove background noise

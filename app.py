@@ -47,13 +47,13 @@ def send_message(thread_id):
         raw = base64.b64decode(data["audio"].split(",")[1])
         wav = webm_to_wav(io.BytesIO(raw))
 
-        pace = wpm(audio=wav)
+        message = whisper_stt(audio_file=wav)
+        pace = wpm(message, audio=wav)
         print(pace)
         decibel = decibelAnalysis(audio=wav)
         print(decibel)
         contrast = contrast(audio=wav)
         print(contrast)
-        message = whisper_stt(audio_file=wav)
 
         client.beta.threads.messages.create(
             thread_id=thread_id, role="user", content=message

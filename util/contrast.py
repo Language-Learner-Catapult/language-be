@@ -15,6 +15,7 @@ def contrast(audio: io.BytesIO) -> dict:
     """
 
     y, sr = librosa.load(audio)
+    audio.seek(0)
     contrast_values = librosa.feature.spectral_contrast(y=y, sr=sr)
 
     contrast = contrast_values.std()
