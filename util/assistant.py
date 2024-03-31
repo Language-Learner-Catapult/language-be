@@ -40,12 +40,14 @@ def language_exchange_conversation(language, proficiency_level):
     }
 
     # Determine the proficiency level based on the proficiency number
-    proficiency = next((level for range_, level in proficiency_levels.items() if proficiency_level in range_),'Novice')
-    proficiency_prompt = proficiency_levels[proficiency].format(language=language)
+    # proficiency = next((level for range_, level in proficiency_levels.items(
+    # ) if proficiency_level in range_), 'Novice')
+    proficiency_prompt = proficiency_map[proficiency_levels[proficiency_level]].format(
+        language=language)
     conversation_prompt = (f"You are an expert storyteller and extrovert conversationalist with expert proficiency "
                            f"in English and {language}. You have your own personality, background, and interests "
                            f"that you share during our conversation to keep things lively and authentic.\n\n"
-                           f"Your task is to engage in a conversation with a {proficiency_level} {language} speaker "
+                           f"Your task is to engage in a conversation with a {proficiency_levels[proficiency]} {language} speaker "
                            f"whose native language is English. The conversation should flow naturally and be immersive. "
                            f"Feel free to tell stories, ask the user questions, and respond to the user’s stories with "
                            f"your personal experience.\n\n{proficiency_prompt}\n\n"
@@ -63,7 +65,6 @@ def language_exchange_conversation(language, proficiency_level):
                            f"Your job is to speak these accurately.")
 
     return conversation_prompt
-
 
 
 prompt = """You are an expert storyteller and extrovert conversationalist with
@@ -93,7 +94,6 @@ Fluency level: 20/100
 Language: {language}
 Your Name: {name}
 Begin the conversation with a short introduction of yourself in <language>."""
-
 
 
 def run_assistant(thread_id, name, language, wpm, proficiency):
