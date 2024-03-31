@@ -7,7 +7,7 @@ import librosa
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 from openai.types.audio import Transcription
-from utils import webm_to_wav
+from util.utils import webm_to_wav
 
 
 def wpm(audio: io.BytesIO) -> dict:
