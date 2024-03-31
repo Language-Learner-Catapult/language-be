@@ -1,10 +1,6 @@
 # Beat tracking example
 import librosa
-<<<<<<< HEAD
-import librosa.display
-=======
 import numpy as np
->>>>>>> origin/decibel
 
 import base64
 import io
@@ -16,40 +12,23 @@ import os
 # from keras.optimizers import RMSprop
 # import matplotlib.pyplot as plt 
 
-<<<<<<< HEAD
-
-def decibelAnalysis():
-    filename = librosa.example('nutcracker')
-    # 2. Load the audio as a waveform `y`
-    #    Store the sampling rate as `sr`
-    y, sr = librosa.load(filename)
-    # 3. Run the default beat tracker
-    tempo, beat_frames = librosa.beat.beat_track(y=y, sr=sr)
-=======
 # le = LabelEncoder()
-base64_audio_string = ""
-with open("encoded-20240330185923.txt", "r") as file:
-    base64_audio_string = file.read()
-audio_bytes = base64.b64decode(base64_audio_string)
+# base64_audio_string = ""
+# with open("./util/encoded-20240330185923.txt", "r") as file:
+#     base64_audio_string = file.read()
+# audio_bytes = base64.b64decode(base64_audio_string)
 def decibelAnalysis(file):
     # filename = librosa.example('nutcracker')
     # print(filename)
-    y, sr = librosa.load(file, sr=None)
->>>>>>> origin/decibel
+    base64_audio_string = file
+    audio_bytes = base64.b64decode(base64_audio_string)
+    y, sr = librosa.load(io.BytesIO(audio_bytes), sr=None)
     D = librosa.stft(y)
     D_db = librosa.amplitude_to_db(D, top_db=None, ref = np.min)
     print(np.nanmean(D_db), np.nanmax(D_db))
     return (np.nanmean(D_db), np.nanmax(D_db))
 
-<<<<<<< HEAD
-    librosa.display.specshow(D_db, sr=sr, x_axis='time', y_axis='log')
-    # 4. Convert the frame indices of beat events into timestamps
-    beat_times = librosa.frames_to_time(beat_frames, sr=sr)
-
-
-decibelAnalysis()
-=======
-decibelAnalysis(io.BytesIO(audio_bytes))
+# decibelAnalysis(io.BytesIO(audio_bytes))
 
 # def getDecibelFreq(file):
 #     y, sr = librosa.load(file, sr=None)
@@ -150,4 +129,3 @@ decibelAnalysis(io.BytesIO(audio_bytes))
 # print("done")
 
 # trainModel(x,y)
->>>>>>> origin/decibel

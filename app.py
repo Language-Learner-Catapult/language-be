@@ -9,6 +9,8 @@ import filetype
 load_dotenv()
 
 from util.assistant import *
+from util.decibel import *
+from util.sentiment import *
 
 server = Flask(__name__)
 server.config['CORS_HEADERS'] = 'Content-Type'
@@ -17,6 +19,10 @@ CORS(server, resources={r"/*": {"origins": "*"}})
 # Add blueprints here
 # from routes.service import service
 # server.register_blueprint(service, url_prefix='/service')
+
+@server.route("/")
+def index():
+    return "Hello, World!"
 
 
 @server.route("/create_thread", methods=['POST'])
@@ -38,8 +44,10 @@ def send_message(thread_id):
     if "audio" in data:
         raw = base64.b64decode(data["audio"].split(",")[1])
         out = io.BytesIO(raw)
+        print(raw)
         out.name = "input.webm"
-
+        decibel = decibelAnalysis(raw)
+        print(decibel)
         message = whisper_stt(out)
 
         client.beta.threads.messages.create(
@@ -47,7 +55,8 @@ def send_message(thread_id):
             role="user",
             content=message
         )
-
+        sentiment_score, sentiment_magnitude = analyzeSentiment(message)
+        print(sentiment_score, sentiment_magnitude)
         response, fluency = run_assistant(
             thread_id, data["name"], data["language"])
         encoded_response = str(base64.b64encode(whisper_tts(response)),
