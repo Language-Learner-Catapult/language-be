@@ -19,11 +19,16 @@ CORS(server, resources={r"/*": {"origins": "*"}})
 # server.register_blueprint(service, url_prefix='/service')
 
 
-@server.route("/create_thread")
+@server.route("/create_thread", methods=['POST'])
 def create_thread():
     thread = client.beta.threads.create()
-    print(run_assistant(thread.id), file=sys.stderr)
-    return thread.id
+
+    data = request.json
+    response = run_assistant(thread.id, data["name"], data["language"])
+    encoded_response = str(base64.b64encode(whisper_tts(response)),
+                           encoding="utf-8")
+
+    return {"thread_id": thread.id, "audio": encoded_response}, 200
 
 
 @server.route("/messages/<string:thread_id>/send", methods=['POST'])
@@ -42,7 +47,7 @@ def send_message(thread_id):
             content=message
         )
 
-        response = run_assistant(thread_id)
+        response = run_assistant(thread_id, data["name"], data["language"])
         encoded_response = str(base64.b64encode(whisper_tts(response)),
                                encoding="utf-8")
 
