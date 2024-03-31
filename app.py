@@ -24,7 +24,8 @@ def create_thread():
     thread = client.beta.threads.create()
 
     data = request.json
-    response = run_assistant(thread.id, data["name"], data["language"])
+    response, fluency = run_assistant(
+        thread.id, data["name"], data["language"])
     encoded_response = str(base64.b64encode(whisper_tts(response)),
                            encoding="utf-8")
 
@@ -47,11 +48,12 @@ def send_message(thread_id):
             content=message
         )
 
-        response = run_assistant(thread_id, data["name"], data["language"])
+        response, fluency = run_assistant(
+            thread_id, data["name"], data["language"])
         encoded_response = str(base64.b64encode(whisper_tts(response)),
                                encoding="utf-8")
 
-        return {"response": response, "audio": encoded_response}, 200
+        return {"response": response, "fluency": fluency, "audio": encoded_response}, 200
     else:
         return "no message provided", 405
 

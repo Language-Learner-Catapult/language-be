@@ -13,7 +13,7 @@ personal experience. You will also be given the speaker's fluency level on a
 scale from 1-100. Your goal should be to seamlessly slip words from <language>
 into the conversation, trying to target easier words if proficiency is lower and
 more complex if it is higher. The amount of English you use in the conversation
-should be based on this level. For any fluency level, you should use that
+should be based on this level. For any fluency level, you should write that
 percentage of language in English.
 
 Make sure to keep the conversation engaging and natural. If the user asks about
@@ -54,7 +54,16 @@ def run_assistant(thread_id, name, language):
         content=chat_completion.choices[0].message.content
     )
 
-    return chat_completion.choices[0].message.content
+    messages.append({"role": "system", "content": "Estimate the user's\
+                        fluency in this language on a scale of 1 to 100. \
+                        Respond only with a fraction of 100."})
+
+    fluency_rating = client.chat.completions.create(
+        messages=messages,
+        model="gpt-4-turbo-preview",
+    )
+
+    return chat_completion.choices[0].message.content, fluency_rating.choices[0].message.content
 
 
 def whisper_tts(text, voice="echo"):
