@@ -6,7 +6,7 @@ import librosa
 from utils import webm_to_wav
 
 
-def contrast(audio: io.BytesIO) -> dict:
+def contrast(audio: io.BytesIO):
     """
     Measure the contrast of a speaker's voice;
     the higher the contrast, the more dynamic the speech is and the more likely
@@ -19,7 +19,7 @@ def contrast(audio: io.BytesIO) -> dict:
     contrast_values = librosa.feature.spectral_contrast(y=y, sr=sr)
 
     contrast = contrast_values.std()
-    return {"contrast": contrast}
+    return contrast
 
 
 if __name__ == "__main__":

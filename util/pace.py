@@ -10,7 +10,7 @@ from utils import bytes_to_str, webm_to_wav
 import soundfile as sf
 
 
-def wpm(transcript: str, audio: io.BytesIO) -> dict:
+def wpm(transcript: str, audio: io.BytesIO):
     """
     Returns wpm of the audio.
     """
@@ -24,7 +24,7 @@ def wpm(transcript: str, audio: io.BytesIO) -> dict:
     avg_pace: float = (
         num_words / duration
     ) * 60  # Average out to num of words per minute
-    return {"wpm": avg_pace}
+    return avg_pace
 
 
 # Given a base64 string, the string gets converted to a wav file
