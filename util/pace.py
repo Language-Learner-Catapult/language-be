@@ -14,8 +14,8 @@ def wpm(audio: io.BytesIO) -> dict:
     """
     Returns wpm of the audio.
     """
-    transcript: Transcription = whisper_stt(audio)
-    words = transcript.text.split(" ")
+    transcript = whisper_stt(audio)
+    words = transcript.split(" ")
     num_words: int = len(words) + 1
     y, sr = librosa.load(audio)
     duration = librosa.get_duration(y=y, sr=sr)

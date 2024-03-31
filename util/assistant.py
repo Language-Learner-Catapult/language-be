@@ -54,18 +54,23 @@ def run_assistant(thread_id, name, language, wpm):
         content=chat_completion.choices[0].message.content
     )
 
-    messages.append({"role": "system", "content": """Please analyze the following
+    messages.append({"role": "system", "content": """Analyze the previous text
                      text and provide a fluency score between 1 and 100, where 1
                      represents a complete beginner and 100 represents a native
-                     speaker. Consider factors such as words per minute, grammar, vocabulary,
-                     sentence structure, and overall coherence when assessing
-                     the text. Respond only with a fraction of 100, like <score>/100.
+                     speaker. If the user used English excessively, remove 10
+                     points from their score. Respond only with a fraction of 100, like <score>/100.
 
                      Pace: {pace}""".format(pace=wpm)})
 
     fluency_rating = client.chat.completions.create(
         messages=messages,
         model="gpt-4-turbo-preview",
+    )
+
+    client.beta.threads.messages.create(
+        thread_id=thread_id,
+        role="assistant",
+        content=f"Fluency level: {fluency_rating.choices[0].message.content}"
     )
 
     return chat_completion.choices[0].message.content, fluency_rating.choices[0].message.content
