@@ -39,4 +39,4 @@ if __name__ == "__main__":
     with open(path, "rb") as f:
         # output: io.BytesIO = io.BytesIO(f.read())
         # output.name = "file.webm"
-        print(wpm(audio=webm_to_wav(f.read())))
+        print(wpm("This is my transcript", audio=webm_to_wav(f.read())))
