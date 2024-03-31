@@ -118,7 +118,7 @@ def run_assistant(thread_id, name, language, wpm, proficiency):
         content=chat_completion.choices[0].message.content
     )
 
-    messages.append({"role": "system", "content": """Please analyze the following
+    messages.append({"role": "system", "content": """Analyze the previous text
                      text and provide a fluency score between 1 and 100, where 1
                      represents a complete beginner and 100 represents a native
                      speaker. Consider factors such as words per minute, grammar, vocabulary,
@@ -141,7 +141,14 @@ def run_assistant(thread_id, name, language, wpm, proficiency):
         # If no number is found, set fluency to the predefined proficiency value
         fluency = proficiency
     fluency = fluency * 0.2 + proficiency * 0.8
-    return chat_completion.choices[0].message.content, fluency
+
+    client.beta.threads.messages.create(
+        thread_id=thread_id,
+        role="assistant",
+        content=f"Fluency level: {fluency_rating.choices[0].message.content}"
+    )
+
+    return chat_completion.choices[0].message.content, fluency_rating.choices[0].message.content
 
 
 def whisper_tts(text, voice="echo"):

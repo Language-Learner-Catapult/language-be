@@ -35,5 +35,17 @@ def webm_to_wav(raw: bytes) -> io.BytesIO:
     output = None
     with open(base_path + "/file.wav", "rb") as f:
         output = io.BytesIO(f.read())
+        output.name = "file.wav"
     # os.remove(base_path + "/file.wav")
     return output
+
+
+def bytes_to_str(b: io.BytesIO) -> io.StringIO:
+    # assume bytes_io is a `BytesIO` object
+    byte_str = b.read()
+
+    # Convert to a "unicode" object
+    text_obj = byte_str.decode("UTF-8")  # Or use the encoding you expect
+
+    # Use text_obj how you see fit!
+    return io.StringIO(text_obj)

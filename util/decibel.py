@@ -1,5 +1,5 @@
 # Beat tracking example
-import librosa.display
+import librosa
 import numpy as np
 
 import base64
@@ -13,23 +13,22 @@ import os
 # import matplotlib.pyplot as plt
 
 # le = LabelEncoder()
-base64_audio_string = ""
-with open("encoded-20240330185923.txt", "r") as file:
-    base64_audio_string = file.read()
-audio_bytes = base64.b64decode(base64_audio_string)
-
-
+# base64_audio_string = ""
+# with open("./util/encoded-20240330185923.txt", "r") as file:
+#     base64_audio_string = file.read()
+# audio_bytes = base64.b64decode(base64_audio_string)
 def decibelAnalysis(file):
     # filename = librosa.example('nutcracker')
     # print(filename)
-    y, sr = librosa.load(file, sr=None)
+    base64_audio_string = file
+    audio_bytes = base64.b64decode(base64_audio_string)
+    y, sr = librosa.load(io.BytesIO(audio_bytes), sr=None)
     D = librosa.stft(y)
     D_db = librosa.amplitude_to_db(D, top_db=None, ref=np.min)
     print(np.nanmean(D_db), np.nanmax(D_db))
     return (np.nanmean(D_db), np.nanmax(D_db))
 
-
-decibelAnalysis(io.BytesIO(audio_bytes))
+# decibelAnalysis(io.BytesIO(audio_bytes))
 
 # def getDecibelFreq(file):
 #     y, sr = librosa.load(file, sr=None)

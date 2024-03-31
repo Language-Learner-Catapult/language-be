@@ -8,8 +8,9 @@ import matplotlib.pyplot as plt
 import soundfile as sf
 from dotenv import load_dotenv
 from openai.types.audio import Transcription
-from util.utils import webm_to_wav
+from util.utils import webm_to_wav, bytes_to_str
 from util.assistant import *
+import soundfile as sf
 
 
 def wpm(transcript, audio: io.BytesIO) -> dict:
@@ -38,4 +39,6 @@ if __name__ == "__main__":
         + "/test_assets/test.webm"
     )
     with open(path, "rb") as f:
-        wpm(audio=webm_to_wav(f.read()))
+        # output: io.BytesIO = io.BytesIO(f.read())
+        # output.name = "file.webm"
+        print(wpm(audio=webm_to_wav(f.read())))
