@@ -1,6 +1,3 @@
-from util.sentiment import *
-from util.decibel import *
-from util.assistant import *
 import base64
 from dotenv import load_dotenv
 from flask import Flask, request
@@ -11,6 +8,9 @@ import filetype
 
 load_dotenv()
 
+# from util.sentiment import *
+from util.decibel import *
+from util.assistant import *
 
 server = Flask(__name__)
 server.config['CORS_HEADERS'] = 'Content-Type'
@@ -45,7 +45,6 @@ def send_message(thread_id):
     if "audio" in data:
         raw = base64.b64decode(data["audio"].split(",")[1])
         out = io.BytesIO(raw)
-        print(raw)
         out.name = "input.webm"
         decibel = decibelAnalysis(raw)
         print(decibel)
@@ -56,8 +55,8 @@ def send_message(thread_id):
             role="user",
             content=message
         )
-        sentiment_score, sentiment_magnitude = analyzeSentiment(message)
-        print(sentiment_score, sentiment_magnitude)
+        # sentiment_score, sentiment_magnitude = analyzeSentiment(message)
+        # print(sentiment_score, sentiment_magnitude)
         response, fluency = run_assistant(
             thread_id, data["name"], data["language"], wpm(out), data["proficiency"])
         encoded_response = str(base64.b64encode(whisper_tts(response)),
