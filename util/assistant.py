@@ -2,11 +2,12 @@ from openai import OpenAI
 import io
 import sys
 import re
+from util import recommendation
 
 client = OpenAI()
 
 
-def language_exchange_conversation(language, proficiency_level, name):
+def language_exchange_conversation(language, proficiency_level, name, query):
     def proficiency_levels(level):
         if level < 17:
             return 'Novice'
@@ -46,7 +47,10 @@ def language_exchange_conversation(language, proficiency_level, name):
     }
 
     # Determine the proficiency level based on the proficiency number
+    (recommendation_words, proficiency_level) = recommendation.process_query(query, proficiency_level)
+    print(recommendation_words,'\n',proficiency_level,'\n')
     proficiency_prompt = proficiency_map[proficiency_levels(proficiency_level)]
+
     conversation_prompt = (f"You are an expert storyteller and extrovert conversationalist with expert proficiency "
                            f"in English and {language}. Your name is {name}. You have your own personality, background, and interests "
                            f"that you share during our conversation to keep things lively and authentic.\n\n"
@@ -54,8 +58,9 @@ def language_exchange_conversation(language, proficiency_level, name):
                            f"whose native language is English. The conversation should flow naturally and be immersive. "
                            f"Feel free to tell stories, ask the user questions, and respond to the user’s stories with "
                            f"your personal experience.\n\n{proficiency_prompt}\n\n"
+                           f"Try slipping in any of the following words if it fits the conversation {recommendation_words}\n\n"
                            f"Keep explanations of vocabulary and grammar to a minimum unless explicitly asked - the focus "
-                           f"should be natural conversation, not dry lessons.\n\n"
+                           f"should be natural conversation.\n\n"
                            f"Feel free to ask questions about interests too, like in a real conversation between "
                            f"language exchange partners. Overall, keep things fun, engaging, and centered around natural "
                            f"communication and building rapport. Limit your responses to 2-4 sentences and ask only one "
@@ -65,10 +70,11 @@ def language_exchange_conversation(language, proficiency_level, name):
                            f"IMPORTANT! Your job is to speak these accurately."
                            f"Start the conversation by introducing yourself as {name}")
 
-    return conversation_prompt
+    return conversation_prompt, proficiency_level
 
-def run_assistant(thread_id, name, language, wpm, proficiency):
-    prompt = language_exchange_conversation(language, proficiency, name)
+def run_assistant(thread_id, name, language, wpm, proficiency, query):
+    prompt, new_proficiency = language_exchange_conversation(language, proficiency, name, query)
+    proficiency = new_proficiency * 0.06 + proficiency * 0.94
     thread = client.beta.threads.messages.list(thread_id)
     messages = [{"role": message.role, "content": message.content[0].text.value}
                 for message in thread.data]
@@ -113,7 +119,7 @@ def run_assistant(thread_id, name, language, wpm, proficiency):
     else:
         # If no number is found, set fluency to the predefined proficiency value
         fluency = proficiency
-    fluency = fluency * 0.6 + proficiency * 0.4
+    fluency = fluency * 0.2 + proficiency * 0.8
 
     client.beta.threads.messages.create(
         thread_id=thread_id,
