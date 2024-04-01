@@ -36,41 +36,36 @@ def calculate_proficiency_update(query, current_proficiency):
 
     return updated_proficiency
 
-def recommend_words(query, proficiency, top_n=10):
-    # Pre-filter the vocabulary based on the difficulty level
-    candidate_words = [word for word in model.index2word if get_word_difficulty(word) <= proficiency + 10]
-
+def recommend_words(query, proficiency, top_n=3):
     # Filter the query to include only words present in the model
     query_words = [word for word in query.split() if word in model]
 
-    # Limit the number of words for similarity calculation
-    candidate_words = candidate_words[:1000]  # Adjust based on performance needs
+    # Initialize an empty list for the final recommended words
+    recommended = []
 
-    # Calculate similarity and composite score for the candidate words
-    word_scores = []
-    for candidate_word in candidate_words:
-        # Compute similarities for each word in the query and take the average
-        if query_words:
-            similarities = [model.similarity(query_word, candidate_word) for query_word in query_words]
-            avg_similarity = sum(similarities) / len(similarities)
-            composite_score = avg_similarity + usage_counts[candidate_word] * 0.1 + usability_scores[candidate_word] * 0.1
-            heapq.heappush(word_scores, (-composite_score, candidate_word))  # Using negative to prioritize higher scores
+    if query_words:
+        # For each query word, find the top 50 similar words in the model
+        all_similar_words = []
+        for query_word in query_words:
+            all_similar_words.extend(model.most_similar(query_word, topn=50))
 
-            # Keep only the top N scoring words in the heap
-            if len(word_scores) > top_n:
-                heapq.heappop(word_scores)
-        else:
-            break  # Exit the loop if no valid query words are found
+        # Rank these words based on a composite score that considers similarity, usage counts, and word difficulty
+        word_scores = []
+        for word, similarity in all_similar_words:
+            # Only consider words that are within the desired difficulty range
+            if get_word_difficulty(word) <= proficiency + 10:
+                composite_score = similarity + usage_counts[word] * 0.1 - get_word_difficulty(word) * 0.1
+                heapq.heappush(word_scores, (composite_score, word))
 
-    # Extract words from the heap, highest scores first
-    recommended = [word for _, word in heapq.nlargest(top_n, word_scores)]
+        # Get the top N words based on the composite score
+        recommended = [word for _, word in heapq.nlargest(top_n, word_scores)]
+
     return recommended
-
 
 
 def process_query(query, current_proficiency):
     if(query == ''):
-        return current_proficiency, []
+        return [], 0
     print('i get here')
     updated_proficiency = calculate_proficiency_update(query, current_proficiency)
     print('new proficiency: ', updated_proficiency)
