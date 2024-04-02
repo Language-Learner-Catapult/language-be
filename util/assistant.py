@@ -7,7 +7,7 @@ from util import recommendation
 client = OpenAI()
 
 
-def language_exchange_conversation(language, proficiency_level, name, query):
+def language_exchange_conversation(language, proficiency_level, name, query, is_new_thread):
     def proficiency_levels(level):
         if level < 17:
             return 'Novice'
@@ -46,11 +46,16 @@ def language_exchange_conversation(language, proficiency_level, name, query):
                    'vocabulary.')
     }
 
-    # Determine the proficiency level based on the proficiency number
-    (recommendation_words, proficiency_level) = recommendation.process_query(query, proficiency_level)
-    print(recommendation_words,'\n',proficiency_level,'\n')
-    proficiency_prompt = proficiency_map[proficiency_levels(proficiency_level)]
+    # This is a call to the vector db essentially. To use it add a vector_models folder to the root dir.
+    # Then download the vectorized version of the model at
+    # https://zenodo.org/records/1410403/files/keyed_vectors.zip?download=1 and put both files in this directory.
 
+    #(recommendation_words, proficiency_level) = recommendation.process_query(query, proficiency_level)
+    #suggestion = ""
+    #if not is_new_thread:
+    #    suggestion = f"Try slipping in any of the following words if it fits the conversation {recommendation_words}\n\n"
+
+    proficiency_prompt = proficiency_map[proficiency_levels(proficiency_level)]
     conversation_prompt = (f"You are an expert storyteller and extrovert conversationalist with expert proficiency "
                            f"in English and {language}. Your name is {name}. You have your own personality, background, and interests "
                            f"that you share during our conversation to keep things lively and authentic.\n\n"
@@ -58,7 +63,7 @@ def language_exchange_conversation(language, proficiency_level, name, query):
                            f"whose native language is English. The conversation should flow naturally and be immersive. "
                            f"Feel free to tell stories, ask the user questions, and respond to the user’s stories with "
                            f"your personal experience.\n\n{proficiency_prompt}\n\n"
-                           f"Try slipping in any of the following words if it fits the conversation {recommendation_words}\n\n"
+                           
                            f"Keep explanations of vocabulary and grammar to a minimum unless explicitly asked - the focus "
                            f"should be natural conversation.\n\n"
                            f"Feel free to ask questions about interests too, like in a real conversation between "
@@ -72,8 +77,8 @@ def language_exchange_conversation(language, proficiency_level, name, query):
 
     return conversation_prompt, proficiency_level
 
-def run_assistant(thread_id, name, language, wpm, proficiency, query):
-    prompt, new_proficiency = language_exchange_conversation(language, proficiency, name, query)
+def run_assistant(thread_id, name, language, wpm, proficiency, query, is_new_thread):
+    prompt, new_proficiency = language_exchange_conversation(language, proficiency, name, query, is_new_thread)
     proficiency = new_proficiency * 0.06 + proficiency * 0.94
     thread = client.beta.threads.messages.list(thread_id)
     messages = [{"role": message.role, "content": message.content[0].text.value}
