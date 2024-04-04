@@ -5,11 +5,11 @@ from util import difficulty
 import sys
 
 # Load the word embedding model
-model = KeyedVectors.load('./vector_models/complete.kv', mmap='r')
+#model = KeyedVectors.load('./vector_models/complete.kv', mmap='r')
 
 # Initialize data structures
-usage_counts = {word: 0 for word in model.index2word}
-usability_scores = {word: np.random.uniform(0, 1) for word in model.index2word}
+#usage_counts = {word: 0 for word in model.index2word}
+#usability_scores = {word: np.random.uniform(0, 1) for word in model.index2word}
 
 def is_spanish(word):
     # Placeholder for a more accurate language detection mechanism
