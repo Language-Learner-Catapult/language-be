@@ -1,7 +1,7 @@
 import io
 import os
 from pyffmpeg import FFmpeg
-from constants import ff
+from util.constants import ff
 import soundfile as sf
 
 

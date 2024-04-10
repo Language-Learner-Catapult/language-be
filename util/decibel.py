@@ -23,7 +23,7 @@ import soundfile as sf
 def decibelAnalysis(audio: io.BytesIO):
     # filename = librosa.example('nutcracker')
     # print(filename)
-    y, sr = sf.load(audio, sr=None)
+    y, sr = sf.read(audio, sr=None)
     D = librosa.stft(y)
     D_db = librosa.amplitude_to_db(D, top_db=None, ref=np.min)
     print(np.nanmean(D_db), np.nanmax(D_db))

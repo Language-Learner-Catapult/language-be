@@ -6,7 +6,7 @@ import json
 import librosa
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
-from utils import bytes_to_str, webm_to_wav
+from util.utils import bytes_to_str, webm_to_wav
 import soundfile as sf
 
 
