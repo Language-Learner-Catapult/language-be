@@ -16,8 +16,8 @@ from util.pace import *
 
 server = Flask(__name__)
 server.config["CORS_HEADERS"] = "Content-Type"
-CORS(server, resources={r"/*": {"origins": "*"}})
-
+# CORS(server, resources={r"/*": {"origins": "*"}})
+CORS(server, resources={r"/*": {"origins": "http://localhost:3000"}})
 # Add blueprints here
 # from routes.service import service
 # server.register_blueprint(service, url_prefix='/service')
