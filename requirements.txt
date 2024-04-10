@@ -9,3 +9,6 @@ pyffmpeg==2.4.2.18.1
 python-dotenv==1.0.1
 scipy==1.10.0
 soundfile==0.12.1
+protobuf==3.12.4
+google.cloud
+assemblyai==0.24.0

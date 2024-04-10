@@ -5,6 +5,8 @@ from flask_cors import CORS
 import io
 import sys
 import filetype
+import openai
+import assemblyai as aai
 from util.utils import webm_to_wav
 
 load_dotenv()
@@ -18,6 +20,7 @@ from util.sentiment import *
 server = Flask(__name__)
 server.config["CORS_HEADERS"] = "Content-Type"
 CORS(server, resources={r"/*": {"origins": "*"}})
+openai = OpenAI()
 
 # Add blueprints here
 # from routes.service import service
@@ -35,7 +38,9 @@ def create_thread():
 
     data = request.json
     response, fluency = run_assistant(thread.id, data["name"], data["language"], 0)
-    encoded_response = str(base64.b64encode(whisper_tts(response)), encoding="utf-8")
+    encoded_response = str(
+        base64.b64encode(whisper_tts(client, response)), encoding="utf-8"
+    )
 
     return {"thread_id": thread.id, "audio": encoded_response}, 200
 
@@ -45,9 +50,9 @@ def send_message(thread_id):
     data = request.json
     if "audio" in data:
         raw = base64.b64decode(data["audio"].split(",")[1])
-        wav = webm_to_wav(io.BytesIO(raw))
+        wav = webm_to_wav(raw)
 
-        message = whisper_stt(audio_file=wav)
+        message = whisper_stt(client, audio_file=wav)
         pace = wpm(message, audio=wav)
         print(pace)
         decibel = decibelAnalysis(audio=wav)
@@ -62,7 +67,7 @@ def send_message(thread_id):
         print(sentiment_score, sentiment_magnitude)
         response, fluency = run_assistant(thread_id, data["name"], data["language"], 30)
         encoded_response = str(
-            base64.b64encode(whisper_tts(response)), encoding="utf-8"
+            base64.b64encode(whisper_tts(client, response)), encoding="utf-8"
         )
 
         return {
