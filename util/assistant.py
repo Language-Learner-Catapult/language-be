@@ -9,9 +9,6 @@ import time
 
 client = OpenAI()
 
-ASSISTANT_ID = os.environ["OPENAI_ASSISTANT_ID"]
-
-
 
 system_instructions = (
     """You are an descriptive storyteller and extrovert conversationalist with expert proficiency in all languages.
