@@ -5,8 +5,11 @@ import io
 import json
 import librosa
 import matplotlib.pyplot as plt
+import soundfile as sf
 from dotenv import load_dotenv
-from util.utils import bytes_to_str, webm_to_wav
+from openai.types.audio import Transcription
+from util.utils import webm_to_wav, bytes_to_str
+from util.assistant import *
 import soundfile as sf
 
 
@@ -16,8 +19,7 @@ def wpm(transcript: str, audio: io.BytesIO):
     """
     words = transcript.split(" ")
     num_words: int = len(words) + 1
-    # num_words = 100
-    # audio_str: io.StringIO = bytes_to_str(audio)
+    audio.seek(0)
     y, sr = sf.read(audio)
     audio.seek(0)
     duration = librosa.get_duration(y=y, sr=sr)

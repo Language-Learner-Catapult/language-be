@@ -11,16 +11,17 @@ from util.utils import webm_to_wav
 
 load_dotenv()
 
-from util.assistant import *
-from util.pace import wpm
 from util.contrast import contrast
 from util.decibel import *
-from util.sentiment import *
+from util.assistant import *
+from util.pace import *
+
+# from util.sentiment import *
 
 server = Flask(__name__)
 server.config["CORS_HEADERS"] = "Content-Type"
 CORS(server, resources={r"/*": {"origins": "*"}})
-openai = OpenAI()
+client = OpenAI()
 
 # Add blueprints here
 # from routes.service import service
@@ -54,11 +55,11 @@ def send_message(thread_id):
 
         message = whisper_stt(client, audio_file=wav)
         pace = wpm(message, audio=wav)
-        print(pace)
-        decibel = decibelAnalysis(audio=wav)
-        print(decibel)
-        contrast = contrast(audio=wav)
-        print(contrast)
+        print(pace, file=sys.stderr)
+        # decibel = decibelAnalysis(audio=wav)
+        # print(decibel, file=sys.stderr)
+        # contrast = contrast(audio=wav)
+        # print(contrast)
 
         client.beta.threads.messages.create(
             thread_id=thread_id, role="user", content=message
@@ -74,6 +75,7 @@ def send_message(thread_id):
             "response": response,
             "fluency": fluency,
             "audio": encoded_response,
+            "pace": pace,
         }, 200
     else:
         return "no message provided", 405
