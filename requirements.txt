@@ -10,4 +10,4 @@ scipy==1.10.0
 soundfile==0.12.1
 protobuf==3.12.4
 google.cloud
-assemblyai==0.24.0
+gensim==3.8.3
