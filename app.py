@@ -4,16 +4,22 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import io
 import sys
+import filetype
+import openai
+import assemblyai as aai
 from util.utils import webm_to_wav
 load_dotenv()
+from util.contrast import contrast
 from util.decibel import *
 from util.assistant import *
 from util.pace import *
 
+# from util.sentiment import *
+
 server = Flask(__name__)
 server.config["CORS_HEADERS"] = "Content-Type"
-CORS(server)
-# CORS(server, resources={r"/*": {"origins": "*"}})
+CORS(server, resources={r"/*": {"origins": "*"}})
+client = OpenAI()
 
 
 def cors_response(object):
@@ -35,7 +41,7 @@ def create_thread():
 
     # Get tts audio and encode
     encoded_response = str(base64.b64encode(
-        whisper_tts(response)), encoding="utf-8"
+        whisper_tts(client, response)), encoding="utf-8"
     )
 
     return cors_response({"thread_id": thread_id, "audio": encoded_response}), 200
@@ -51,13 +57,24 @@ def send_message(thread_id):
         out.name = "input.webm"
         wav = webm_to_wav(raw)
 
-        message = whisper_stt(audio_file=wav)
+        message = whisper_stt(client, audio_file=wav)
         pace = wpm(message, audio=wav)
+        print(pace, file=sys.stderr)
+        # decibel = decibelAnalysis(audio=wav)
+        # print(decibel, file=sys.stderr)
+        # contrast = contrast(audio=wav)
+        # print(contrast)
         print(f"WPM: {pace}", file=sys.stderr)
 
         # Add the user's message to the thread
         client.beta.threads.messages.create(
             thread_id=thread_id, role="user", content=message
+        )
+        sentiment_score, sentiment_magnitude = analyzeSentiment(message)
+        print(sentiment_score, sentiment_magnitude)
+        response, fluency = run_assistant(thread_id, data["name"], data["language"], 30)
+        encoded_response = str(
+            base64.b64encode(whisper_tts(client, response)), encoding="utf-8"
         )
 
         # Run the model with on the thread and get response
