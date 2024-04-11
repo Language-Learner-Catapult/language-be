@@ -84,7 +84,7 @@ def send_message(thread_id):
 def get_messages(thread_id):
     thread = client.beta.threads.messages.list(thread_id)
     messages = [
-        {"role": message.role, "content": message.content[0].text.value} for message in thread.data
+        {"role": message.role, "content": message.content[0].text.value} for message in thread.data if (message.role != "system")
     ]
 
 
