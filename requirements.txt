@@ -11,3 +11,4 @@ soundfile==0.12.1
 protobuf==3.12.4
 google.cloud
 gensim==3.8.3
+deepgram-sdk
