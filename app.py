@@ -4,15 +4,11 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import io
 import sys
-import filetype
-import openai
-import assemblyai as aai
 from util.utils import webm_to_wav
-load_dotenv()
-from util.contrast import contrast
 from util.decibel import *
 from util.assistant import *
 from util.pace import *
+load_dotenv()
 
 # from util.sentiment import *
 
@@ -40,9 +36,7 @@ def create_thread():
     print("CALLED /create_thread, created thread: ", thread_id)
 
     # Get tts audio and encode
-    encoded_response = str(base64.b64encode(
-        whisper_tts(client, response)), encoding="utf-8"
-    )
+    encoded_response = str(base64.b64encode(whisper_tts(response)), encoding="utf-8")
 
     return cors_response({"thread_id": thread_id, "audio": encoded_response}), 200
 
@@ -70,19 +64,20 @@ def send_message(thread_id):
         client.beta.threads.messages.create(
             thread_id=thread_id, role="user", content=message
         )
-        sentiment_score, sentiment_magnitude = analyzeSentiment(message)
-        print(sentiment_score, sentiment_magnitude)
-        response, fluency = run_assistant(thread_id, data["name"], data["language"], 30)
-        encoded_response = str(
-            base64.b64encode(whisper_tts(client, response)), encoding="utf-8"
-        )
+        # sentiment_score, sentiment_magnitude = analyzeSentiment(message)
+        # print(sentiment_score, sentiment_magnitude)
+        # response = run_assistant(thread_id)
+        # encoded_response = str(
+        #     base64.b64encode(whisper_tts(client, response)), encoding="utf-8"
+        # )
 
         # Run the model with on the thread and get response
         response = run_assistant(thread_id)
 
         # Get fluency score
-        proficiency = data["proficiency"]
-        fluency_score = get_fluency_score(message, pace, proficiency) * 0.2 + proficiency * 0.8
+        current_fluency_score = data["proficiency"]
+        # fluency_score = get_fluency_score(message, pace, proficiency) * 0.2 + proficiency * 0.8
+        fluency_score = fluency({"buffer":wav}, current_fluency_score, 1, "english", data["language"]) * 0.5 + current_fluency_score * 0.5
 
 
         encoded_response = str(base64.b64encode(whisper_tts(response)), encoding="utf-8")
@@ -109,4 +104,4 @@ def get_messages(thread_id):
 
 
 if __name__ == "__main__":
-    server.run(debug=True, host="0.0.0.0")
+    server.run(debug=True, host="0.0.0.0", port=5001)
